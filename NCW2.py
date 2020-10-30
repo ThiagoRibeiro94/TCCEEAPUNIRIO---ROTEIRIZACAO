@@ -7,14 +7,61 @@ def CarregarJson(nomeArquivo):
         return json.load(f)
 
 
+def ExcluirDadosMatriz(matriz=[],lista1=[],lista2=[],lista3=[],listaexcluir=[]):
+    
+    novaMatriz =[]
+    novaLista1 =[]
+    novaLista2 =[]
+    novaLista3 =[]
+    matrizIntermediaria = []
+    
+    for linha in matriz: 
+        index = matriz.index(linha)
+        if index in listaexcluir:
+            None
+        else:
+            matrizIntermediaria.append(linha)
+                
+    for linha in matrizIntermediaria:
+        novaLinha = []
+        for i in range(len(linha)):
+            index = i
+            if index in listaexcluir:
+                None
+            else:
+                novaLinha.append(linha[i])         
+        novaMatriz.append(novaLinha)
+        
+    if lista1!=[] and lista2!=[] and lista3!=[]:
+        for i in range(len(lista1)):
+            if i in listaexcluir:
+                None
+            else:
+                novaLista1.append(lista1[i])
+                novaLista2.append(lista2[i])
+                novaLista3.append(lista3[i])
+    
+    
+    return novaMatriz, novaLista1,novaLista2,novaLista3
+                
+        
+        
+        
+
+listaexcluir = [1,2,4,6,8,9,14,16,17,18,19,22,25,26]
 total_pessoas = CarregarJson('2020JSON/jsonPessoas.json')["pessoas"]
-metros = CarregarJson('2020JSON/jsonMetros.json')["distanciaEmMetros"]
 minutos = CarregarJson('2020JSON/jsonMinutos.json')["distanciaEmMinutos"]
 nos = CarregarJson('2020JSON/jsonEndereco.json')["endereco"]
-achandoBairros = CarregarJson('2020JSON/jsonNos.json')["nos"]
+gastos = CarregarJson('2020JSON/jsonGasto.json')['Gasto']
 
-bairosDoEstudo = ['PONTO INICIAL']
-bairosDoEstudo = bairosDoEstudo + achandoBairros
+
+
+dadosDepoisExclusão = ExcluirDadosMatriz(minutos, total_pessoas, gastos, nos, listaexcluir)
+minutos = dadosDepoisExclusão[0]
+total_pessoas= dadosDepoisExclusão[1]
+gastos = dadosDepoisExclusão[2]
+nos = dadosDepoisExclusão[3]
+
 
 indices = []
 for i in range(len(nos)):
@@ -35,6 +82,7 @@ dicionario_economias_ordenado = {}
 for item in sorted(dicionario_economias, key = dicionario_economias.get,reverse=True):
     dicionario_economias_ordenado[item] = dicionario_economias[item]
 
+print(dicionario_economias_ordenado)
 #Começando o passo3,4 e 5
 lista_pontos = list(dicionario_economias_ordenado.keys())
 
@@ -50,7 +98,8 @@ def InteracaoCW(dicionario,lista,tempo,pessoas,rota,lista_rotas,minutos,total_pe
             pessoas_entre_pontos = total_pessoas[chave[0]] + total_pessoas[chave[1]]
             
             if rota[-1] == chave[0] and chave in lista:
-                if tempo + minutos_entre_pontos <= 150 and pessoas + pessoas_entre_pontos <= 48:
+                if tempo + minutos_entre_pontos <= 480 and pessoas + pessoas_entre_pontos <= 60:
+
                     rota.append(chave[1])
                     tempo += minutos_entre_pontos
                     pessoas += pessoas_entre_pontos
@@ -146,32 +195,30 @@ criarRotas = CriarRotarCSV(lista_rotas)
 lista_tempo = []
 lista_metros = []
 lista_pessoas = []
+lista_gasto = []
 
 for route in lista_rotas:
     tempo = 0
     distancia = 0
-    pessoas = 0 
+    pessoas = 0
+    gasto = 0
     for ponto in range(len(route)):
         try:
             tempo = tempo + minutos[route[ponto]][route[ponto+1]]
-            distancia = distancia + metros[route[ponto]][route[ponto+1]]
             pessoas = pessoas + total_pessoas[route[ponto]]
+            gasto = gasto + gastos[route[ponto]]
         except:
             None
-    lista_metros.append(distancia)
+
     lista_tempo.append(tempo)
     lista_pessoas.append(pessoas)
-km = sum(lista_metros)/1000
+    lista_gasto.append(gasto)
 
-taxaCombustivel = 3
-precoCombustivel = 3.58
-taxaKmReais=(1/taxaCombustivel)*precoCombustivel
-print(taxaKmReais)
-print(km*taxaKmReais)
-print(lista_metros)
+
+
 print(lista_tempo)
 print(lista_pessoas)
-
+print(lista_gasto)
 for i in range(len(lista_rotas)):
     print("=======================================================================")
     print(f'Rota {i}')
@@ -182,10 +229,9 @@ for i in range(len(lista_rotas)):
     print(" ")
     for j in lista_rotas[i]:
         print(f'- {nos[j]}')
-        print(f'bairro = {bairosDoEstudo[j]}')
+
     print(" ")
     print(" ")
-    print(f'Gasto da rota com diesel:R${(lista_metros[i]/1000)*taxaKmReais}')
 
     print(" ")
     print(f'Tempo gasto na rota: {lista_tempo[i]} minutos')

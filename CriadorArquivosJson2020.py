@@ -31,8 +31,7 @@ with open('2020JSON/jsonMinutos.json','w') as arquivo:
 dados2 = pd.read_csv('PessoasEPassagens.csv')
 n_passageiros = list(dados2['Quantidade'])
 gasto_passagem = list(dados2['total'])
-
-
+print(dados2)
 with open('2020JSON/jsonPessoas.json','w') as arquivo:
     jsonPessoas = {"pessoas":n_passageiros}
     json.dump(jsonPessoas,arquivo)
