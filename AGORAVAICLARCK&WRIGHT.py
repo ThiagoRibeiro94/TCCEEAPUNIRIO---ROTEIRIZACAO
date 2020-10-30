@@ -49,7 +49,7 @@ def ExcluirDadosMatriz(matriz=[],lista1=[],lista2=[],lista3=[],listaexcluir=[]):
         
         
 
-listaexcluir = []
+listaexcluir = [1,4,6,9,14,16,19,22,23,26,2,8,17,18,25]
 total_pessoas = CarregarJson('2020JSON/jsonPessoas.json')["pessoas"]
 matriz = CarregarJson('2020JSON/jsonMinutos.json')["distanciaEmMinutos"]
 nos = CarregarJson('2020JSON/jsonEndereco.json')["endereco"]
@@ -64,7 +64,7 @@ gastos = dadosDepoisExclusão[2]
 nos = dadosDepoisExclusão[3]
 
 demandas = total_pessoas
-capacidade = 58
+capacidade = 64
 arestas = {}
 for i in range(1,len(matriz)):
     for j in range(1,len(matriz)):
