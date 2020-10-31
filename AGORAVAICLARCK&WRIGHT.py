@@ -64,7 +64,7 @@ gastos = dadosDepoisExclusão[2]
 nos = dadosDepoisExclusão[3]
 
 demandas = total_pessoas
-capacidade = 64
+capacidade = 58
 arestas = {}
 for i in range(1,len(matriz)):
     for j in range(1,len(matriz)):
